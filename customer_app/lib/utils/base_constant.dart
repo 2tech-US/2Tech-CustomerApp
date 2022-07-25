@@ -5,6 +5,19 @@ class Constant {
   static const APP_FONT_FAMILY = "Inter";
 }
 
+ThemeData baseTheme() {
+  final ThemeData base = ThemeData(
+    fontFamily: Constant.APP_FONT_FAMILY,
+    backgroundColor: Colors.white,
+    dividerColor: BaseColor.hint,
+    errorColor: BaseColor.error,
+    focusColor: BaseColor.primary,
+    hintColor: BaseColor.hint,
+    primaryColor: BaseColor.primary,
+  );
+  return base;
+}
+
 class BaseColor {
   static const Color primary = Color(0xFF003399);
   static const Color error = Color(0xFFD43513);
