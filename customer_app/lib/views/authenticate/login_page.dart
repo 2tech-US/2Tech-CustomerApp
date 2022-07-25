@@ -1,11 +1,15 @@
 import 'dart:math';
-import 'package:customer_app/views/authenticate/register_information_page.dart';
+import 'package:customer_app/cubit/app_cubit.dart';
+import 'package:customer_app/cubit/authentication/authentication_cubit.dart';
+import 'package:customer_app/logic/authentication_logic.dart';
+import 'package:customer_app/models/authenticaton/authentication_model.dart';
 import 'package:customer_app/views/authenticate/register_phone_page.dart';
 import 'package:customer_app/widgets/custom_button/custom_button.dart';
 import 'package:customer_app/widgets/custom_textfield/custom_textfield.dart';
 import 'package:customer_app/widgets/template_page/common_page.dart';
 import 'package:flutter/material.dart';
 import 'package:customer_app/utils/base_constant.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -91,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
               hintText: "Nhập số điện thoại",
               required: true,
               labelText: "Số điện thoại",
-              textInputType: TextInputType.number,
+              textInputType: TextInputType.text,
               textInputAction: TextInputAction.next),
           const SizedBox(height: 16),
           CustomTextField.common(
@@ -118,7 +122,11 @@ class _LoginPageState extends State<LoginPage> {
           AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               height: (keyboardHeight == 0) ? 32 : 16),
-          CustomButton.common(onTap: () {}, content: "Đăng Nhập"),
+          BlocProvider.value(
+              value: BlocProvider.of<AppCubit>(context),
+              child: CustomButton.common(
+                  onTap: () => valid(),
+                  content: "Đăng nhập"))
         ]));
   }
 
@@ -140,6 +148,44 @@ class _LoginPageState extends State<LoginPage> {
               }),
         ]));
   }
+
+    void valid() async {
+    final String phone = _phoneController.text;
+    final String password = _passwordController.text;
+    if (validLoginData()) {
+      bool validUserInput = await BlocProvider.of<AuthenticationCubit>(context)
+          .loginValid(LoginRequest(username: phone, password: password));
+      if (validUserInput) {
+        BlocProvider.of<AppCubit>(context).authenticate();
+        return;
+      }
+      _clearPassword();
+      setState(() {
+        _phoneError = "Số điện thoại hoặc mật khẩu không đúng";
+      });
+    }
+  }
+
+  bool validLoginData() {
+    final String phone = _phoneController.text;
+    final String password = _passwordController.text;
+    if (AuthenticationLogic.checkPhoneNumber(phone) != null) {
+      setState(() {
+        _phoneError = AuthenticationLogic.checkPhoneNumber(phone);
+      });
+      _clearPassword();
+      return false;
+    }
+    if (AuthenticationLogic.checkPassword(password) != null) {
+      setState(() {
+        _passwordError = AuthenticationLogic.checkPassword(password);
+      });
+      _clearPassword();
+      return false;
+    }
+    return true;
+  }
+
 
   void _clearPassword() {
     _passwordController.clear();
