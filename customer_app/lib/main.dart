@@ -1,6 +1,9 @@
-import 'package:customer_app/views/introduction/introduction_page.dart';
+import 'package:customer_app/cubit/app_cubit.dart';
+import 'package:customer_app/cubit/app_cubit_logic.dart';
+import 'package:customer_app/utils/base_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   setOrientations();
@@ -18,12 +21,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '2Tech',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return BlocProvider(
+      create: (context) => AppCubit(),
+      child: BlocConsumer<AppCubit, CubitState>(
+        listener: (context, state) {
+          if (state is TimedOutState) {
+            BlocProvider.of<AppCubit>(context).kick();
+          }
+        },
+        builder: (context, state) {
+          return MaterialApp(
+            initialRoute: '/',
+            debugShowCheckedModeBanner: false,
+            theme: baseTheme(),
+            home:
+            const AppCubitLogic(),
+          );
+        },
       ),
-      home: const IntroductionPage(),
     );
   }
 }
