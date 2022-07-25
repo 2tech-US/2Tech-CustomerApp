@@ -125,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget buildRegisterArea(double heightSafeArea, double keyboardHeight) {
     return SizedBox(
         height: (keyboardHeight == 0) ? 200 : 0,
-        child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(
             "Bạn chưa có tài khoản?",
             style: BaseTextStyle.fontFamilyRegular(Colors.black, 14),
