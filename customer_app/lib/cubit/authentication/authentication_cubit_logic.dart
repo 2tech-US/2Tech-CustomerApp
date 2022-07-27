@@ -15,11 +15,11 @@ class AuthenticationCubitLogic extends StatelessWidget {
         child: BlocConsumer<AuthenticationCubit, CubitState>(
             listener: (context, state) {
           if (state is RegisterState) {
-            // Navigator.of(context).push(MaterialPageRoute(
-            //     // Wrap widget by BlocProvider as Navigator builds a new context
-            //     builder: (_) => BlocProvider(
-            //         create: (context) => AuthenticationCubit(),
-            //         child: RegisterInformationPage())));
+            Navigator.of(context).push(MaterialPageRoute(
+                // Wrap widget by BlocProvider as Navigator builds a new context
+                builder: (_) => BlocProvider(
+                    create: (context) => AuthenticationCubit(),
+                    child: const RegisterInformationPage())));
           }
           if (state is ForgotPasswordState) {
             // Navigator.of(context).push(MaterialPageRoute(

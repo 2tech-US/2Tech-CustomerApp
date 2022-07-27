@@ -1,10 +1,14 @@
 import 'dart:math';
+import 'package:customer_app/cubit/authentication/authentication_cubit.dart';
+import 'package:customer_app/logic/authentication_logic.dart';
+import 'package:customer_app/models/authenticaton/authentication_model.dart';
 import 'package:customer_app/utils/base_constant.dart';
 import 'package:customer_app/views/authenticate/login_page.dart';
 import 'package:customer_app/widgets/custom_button/custom_button.dart';
 import 'package:customer_app/widgets/custom_textfield/custom_textfield.dart';
 import 'package:customer_app/widgets/template_page/common_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RegisterInformationPage extends StatefulWidget {
   const RegisterInformationPage({Key? key}) : super(key: key);
@@ -118,12 +122,13 @@ class _RegisterInformationPageState extends State<RegisterInformationPage> {
           textInputAction: TextInputAction.done,
           isVisibility: true),
       const SizedBox(height: 32),
-      CustomButton.common(
-        onTap: () {
-          showSnackbarMsg(context, "Đăng ký thành công!");
-          Navigator.of(context).popUntil((route) => route.isFirst);
-        },
-        content: "Đăng ký",
+      BlocProvider.value(
+        value: BlocProvider.of<AuthenticationCubit>(context),
+        child: CustomButton.common(
+            onTap: () {
+              valid();
+            },
+            content: "Đăng ký"),
       ),
       const SizedBox(height: 8.0),
       TextButton.icon(
@@ -139,19 +144,98 @@ class _RegisterInformationPageState extends State<RegisterInformationPage> {
     ]);
   }
 
-  void showSnackbarMsg(BuildContext context, String content) {
+  void showSnackbarMsg(BuildContext context, String content,
+      Color? backgroundColor, Color? textColor) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: BaseColor.hint,
+      backgroundColor: backgroundColor ?? BaseColor.hint,
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 80),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       content: Text(
         content,
         textAlign: TextAlign.center,
-        style: BaseTextStyle.fontFamilyRegular(Colors.white, 14),
+        style: BaseTextStyle.fontFamilyRegular(textColor ?? Colors.white, 14),
       ),
       duration: const Duration(seconds: 2),
     ));
+  }
+
+  void valid() async {
+    final String name = _nameController.text;
+    final String phone = _usernameController.text;
+    final String password = _passwordController.text;
+    final String confirmPassword = _confirmPasswordController.text;
+    if (validRegisterData()) {
+      int validUserInput = await BlocProvider.of<AuthenticationCubit>(context)
+          .registerValid(RegisterRequest(
+              name: name,
+              username: phone,
+              password: password,
+              confirmPassword: confirmPassword));
+      if (validUserInput == 200) {
+        showSnackbarMsg(context, "Đăng ký thành công!", null, null);
+        Navigator.of(context).popUntil((route) => route.isFirst);
+        return;
+      }
+      if (validUserInput == 400) {
+        _clearPassword();
+        setState(() {
+          _usernameError = "Email này đã tồn tại";
+        });
+        return;
+      }
+      _clearPassword();
+      showSnackbarMsg(
+          context, "Đăng ký thất bại. Hãy thử lại", Colors.red, null);
+    }
+  }
+
+  bool validRegisterData() {
+    final String name = _nameController.text;
+    final String phone = _usernameController.text;
+    final String password = _passwordController.text;
+    final String confirmPassword = _confirmPasswordController.text;
+    if (AuthenticationLogic.checkName(name) != null) {
+      setState(() {
+        _nameError = AuthenticationLogic.checkName(name);
+      });
+      _clearPassword();
+      return false;
+    }
+    if (AuthenticationLogic.checkPhoneNumber(phone) != null) {
+      setState(() {
+        _usernameError = AuthenticationLogic.checkPhoneNumber(phone);
+      });
+      _clearPassword();
+      return false;
+    }
+    if (AuthenticationLogic.checkPassword(password) != null) {
+      setState(() {
+        _passwordError = AuthenticationLogic.checkPassword(password);
+      });
+      _clearPassword();
+      return false;
+    }
+    if (AuthenticationLogic.checkPassword(confirmPassword) != null) {
+      setState(() {
+        _confirmPasswordError =
+            AuthenticationLogic.checkPassword(confirmPassword);
+      });
+      _clearPassword();
+      return false;
+    }
+    if (AuthenticationLogic.checkMatchPassword(password, confirmPassword) !=
+        null) {
+      setState(() {
+        _passwordError =
+            AuthenticationLogic.checkMatchPassword(password, confirmPassword);
+        _confirmPasswordError =
+            AuthenticationLogic.checkMatchPassword(password, confirmPassword);
+      });
+      _clearPassword();
+      return false;
+    }
+    return true;
   }
 
   void _clearPassword() {
