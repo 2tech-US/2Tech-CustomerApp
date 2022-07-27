@@ -141,8 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                   style:
                       BaseTextStyle.fontFamilySemiBold(BaseColor.primary, 14)),
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const RegisterPhonePage()));
+                BlocProvider.of<AuthenticationCubit>(context).register();
               }),
         ]));
   }

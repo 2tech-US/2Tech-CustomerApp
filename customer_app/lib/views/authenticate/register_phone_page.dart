@@ -142,7 +142,8 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
                     );
                   } else {
                     setState(() {
-                      _phoneError = "Bạn phải đồng ý với điều khoản và điều kiện của 2Tech";
+                      _phoneError =
+                          "Bạn phải đồng ý với điều khoản và điều kiện của 2Tech";
                     });
                   }
                 },
@@ -151,7 +152,7 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
               const SizedBox(height: 8.0),
               TextButton.icon(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                   icon: const Icon(Icons.arrow_back,
                       size: 15, color: Color.fromRGBO(0, 51, 153, 1)),

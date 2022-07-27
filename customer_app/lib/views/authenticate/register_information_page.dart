@@ -4,6 +4,7 @@ import 'package:customer_app/logic/authentication_logic.dart';
 import 'package:customer_app/models/authenticaton/authentication_model.dart';
 import 'package:customer_app/utils/base_constant.dart';
 import 'package:customer_app/views/authenticate/login_page.dart';
+import 'package:customer_app/views/authenticate/register_phone_page.dart';
 import 'package:customer_app/widgets/custom_button/custom_button.dart';
 import 'package:customer_app/widgets/custom_textfield/custom_textfield.dart';
 import 'package:customer_app/widgets/template_page/common_page.dart';
@@ -133,9 +134,7 @@ class _RegisterInformationPageState extends State<RegisterInformationPage> {
       const SizedBox(height: 8.0),
       TextButton.icon(
           onPressed: () {
-            Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-                (route) => route.isFirst);
+            Navigator.of(context).pop();
           },
           icon: const Icon(Icons.arrow_back,
               size: 15, color: Color.fromRGBO(0, 51, 153, 1)),
@@ -173,8 +172,9 @@ class _RegisterInformationPageState extends State<RegisterInformationPage> {
               password: password,
               confirmPassword: confirmPassword));
       if (validUserInput == 200) {
-        showSnackbarMsg(context, "Đăng ký thành công!", null, null);
-        Navigator.of(context).popUntil((route) => route.isFirst);
+        print("Register success");
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const RegisterPhonePage()));
         return;
       }
       if (validUserInput == 400) {
