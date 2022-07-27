@@ -185,8 +185,10 @@ class _RegisterInformationPageState extends State<RegisterInformationPage> {
         return;
       }
       _clearPassword();
-      showSnackbarMsg(
-          context, "Đăng ký thất bại. Hãy thử lại", Colors.red, null);
+      setState(() {
+        showSnackbarMsg(
+            context, "Đăng ký thất bại. Hãy thử lại", Colors.red, null);
+      });
     }
   }
 
