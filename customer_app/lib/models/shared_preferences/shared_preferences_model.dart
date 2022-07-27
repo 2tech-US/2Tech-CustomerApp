@@ -33,6 +33,7 @@ class SharedPref {
 }
 
 class SharedPrefPath {
+  static const String introductionFlag = "introductionFlag";
   static const String token = "token";
   static const String refreshToken = "refreshToken";
   static const String username = "username";

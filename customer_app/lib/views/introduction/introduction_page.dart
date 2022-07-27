@@ -1,9 +1,11 @@
 import 'dart:math';
 
+import 'package:customer_app/cubit/app_cubit.dart';
 import 'package:customer_app/utils/base_constant.dart';
 import 'package:customer_app/views/authenticate/login_page.dart';
 import 'package:customer_app/widgets/template_page/common_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 class IntroductionPage extends StatelessWidget {
@@ -22,11 +24,7 @@ class IntroductionPage extends StatelessWidget {
         child: IntroductionScreen(
             globalBackgroundColor: Colors.transparent,
             onDone: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const LoginPage(),
-                ),
-              );
+              BlocProvider.of<AppCubit>(context).markIntroductionFlag();
             },
             showNextButton: false,
             showDoneButton: true,

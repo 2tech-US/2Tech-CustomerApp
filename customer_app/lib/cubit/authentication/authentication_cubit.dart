@@ -20,7 +20,6 @@ class AuthenticationCubit extends Cubit<CubitState> {
     login(loginRequest);
   }
 
-  /// Initial States
   void login(LoginRequest loginRequest) {
     emit(LoginState(loginRequest));
   }

@@ -10,17 +10,18 @@ part 'app_state.dart';
 
 class AppCubit extends Cubit<CubitState> {
   AppCubit() : super(InitialState()) {
-    authenticationHandler();
+    appIntroductionHandler();
+  }
+
+  /// Initial State
+  void introduce() {
+    emit(FirstOpenState());
   }
 
   Future<void> authenticate() async {
     String? currentToken = await SharedPref.read(SharedPrefPath.token);
     if (currentToken != null && !isTokenExpired(currentToken)) {
-      var response =
-          await BaseService.getData(ServicePath.login, token: currentToken);
-      if (response != null) {
-        emit(AuthenticatedState());
-      }
+      emit(AuthenticatedState());
     }
   }
 
@@ -31,6 +32,15 @@ class AppCubit extends Cubit<CubitState> {
 
   void unAuthenticate() {
     emit(UnauthenticatedState());
+  }
+
+  void appIntroductionHandler() async {
+    final flag = await introductionFlag();
+    if (flag) {
+      authenticationHandler();
+      return;
+    }
+    introduce();
   }
 
   void authenticationHandler() async {
@@ -73,6 +83,19 @@ class AppCubit extends Cubit<CubitState> {
 
   bool isTokenExpired(String token) {
     return JwtDecoder.isExpired(token);
+  }
+
+  Future<bool> introductionFlag() async {
+    bool? opened = await SharedPref.read(SharedPrefPath.introductionFlag);
+    if (opened == true) {
+      return true;
+    }
+    return false;
+  }
+
+  void markIntroductionFlag() async {
+    await SharedPref.save(SharedPrefPath.introductionFlag, true);
+    unAuthenticate();
   }
 
   void logout() {

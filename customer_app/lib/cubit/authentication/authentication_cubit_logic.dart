@@ -1,6 +1,7 @@
 import 'package:customer_app/cubit/app_cubit.dart';
 import 'package:customer_app/cubit/authentication/authentication_cubit.dart';
 import 'package:customer_app/views/authenticate/login_page.dart';
+import 'package:customer_app/views/authenticate/register_information_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,7 +19,7 @@ class AuthenticationCubitLogic extends StatelessWidget {
             //     // Wrap widget by BlocProvider as Navigator builds a new context
             //     builder: (_) => BlocProvider(
             //         create: (context) => AuthenticationCubit(),
-            //         child: RegisterPage(heightSafe: heightSafeArea))));
+            //         child: RegisterInformationPage())));
           }
           if (state is ForgotPasswordState) {
             // Navigator.of(context).push(MaterialPageRoute(

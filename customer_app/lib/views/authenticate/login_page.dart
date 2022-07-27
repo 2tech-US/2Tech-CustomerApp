@@ -77,8 +77,7 @@ class _LoginPageState extends State<LoginPage> {
             ? heightSafeArea * 0.3
             : heightSafeArea * 0.15,
         child: Image.asset("assets/images/app_logo.png",
-            height: 100,
-            width: safeWidth * 0.6, fit: BoxFit.fitHeight));
+            height: 100, width: safeWidth * 0.6, fit: BoxFit.fitHeight));
   }
 
   Widget buildLoginArea(
@@ -125,8 +124,7 @@ class _LoginPageState extends State<LoginPage> {
           BlocProvider.value(
               value: BlocProvider.of<AppCubit>(context),
               child: CustomButton.common(
-                  onTap: () => valid(),
-                  content: "Đăng nhập"))
+                  onTap: () => valid(), content: "Đăng nhập"))
         ]));
   }
 
@@ -149,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
         ]));
   }
 
-    void valid() async {
+  void valid() async {
     final String phone = _phoneController.text;
     final String password = _passwordController.text;
     if (validLoginData()) {
@@ -157,6 +155,7 @@ class _LoginPageState extends State<LoginPage> {
           .loginValid(LoginRequest(username: phone, password: password));
       if (validUserInput) {
         BlocProvider.of<AppCubit>(context).authenticate();
+        showSnackbarMsg(context, "Đăng nhập thành công!");
         return;
       }
       _clearPassword();
@@ -186,7 +185,6 @@ class _LoginPageState extends State<LoginPage> {
     return true;
   }
 
-
   void _clearPassword() {
     _passwordController.clear();
   }
@@ -196,5 +194,20 @@ class _LoginPageState extends State<LoginPage> {
       _phoneError = null;
       _passwordError = null;
     });
+  }
+
+  void showSnackbarMsg(BuildContext context, String content) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: BaseColor.hint,
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 80),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      content: Text(
+        content,
+        textAlign: TextAlign.center,
+        style: BaseTextStyle.fontFamilyRegular(Colors.white, 14),
+      ),
+      duration: const Duration(seconds: 2),
+    ));
   }
 }

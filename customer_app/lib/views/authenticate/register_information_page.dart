@@ -120,19 +120,7 @@ class _RegisterInformationPageState extends State<RegisterInformationPage> {
       const SizedBox(height: 32),
       CustomButton.common(
         onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: BaseColor.hint,
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 80),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.0)),
-            content: Text(
-              "Đăng ký thành công!",
-              textAlign: TextAlign.center,
-              style: BaseTextStyle.fontFamilyRegular(Colors.white, 14),
-            ),
-            duration: const Duration(seconds: 2),
-          ));
+          showSnackbarMsg(context, "Đăng ký thành công!");
           Navigator.of(context).popUntil((route) => route.isFirst);
         },
         content: "Đăng ký",
@@ -149,6 +137,21 @@ class _RegisterInformationPageState extends State<RegisterInformationPage> {
           label: Text("Trở về trang đăng nhập",
               style: BaseTextStyle.fontFamilySemiBold(BaseColor.primary, 14)))
     ]);
+  }
+
+  void showSnackbarMsg(BuildContext context, String content) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: BaseColor.hint,
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 80),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      content: Text(
+        content,
+        textAlign: TextAlign.center,
+        style: BaseTextStyle.fontFamilyRegular(Colors.white, 14),
+      ),
+      duration: const Duration(seconds: 2),
+    ));
   }
 
   void _clearPassword() {

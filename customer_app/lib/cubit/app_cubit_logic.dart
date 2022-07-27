@@ -34,7 +34,7 @@ class _AppCubitLogicState extends State<AppCubitLogic> {
         if (state is UnauthenticatedState) {
           return const AuthenticationCubitLogic();
         }
-        if (state is InitialState) {
+        if (state is FirstOpenState) {
           return const IntroductionPage();
         }
         return const AppLoadingPage();
