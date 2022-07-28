@@ -168,7 +168,7 @@ class _RegisterInformationPageState extends State<RegisterInformationPage> {
       int validUserInput = await BlocProvider.of<AuthenticationCubit>(context)
           .registerValid(RegisterRequest(
               name: name,
-              username: phone,
+              phone: phone,
               password: password,
               confirmPassword: confirmPassword));
       if (validUserInput == 200) {

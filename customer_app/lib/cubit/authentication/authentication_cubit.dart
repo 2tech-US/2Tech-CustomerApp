@@ -13,9 +13,9 @@ class AuthenticationCubit extends Cubit<CubitState> {
   }
 
   void startAuth() async {
-    LoginRequest loginRequest = LoginRequest(username: "", password: "");
-    await getLocalUsername().then((username) {
-      loginRequest.username = username ?? "";
+    LoginRequest loginRequest = LoginRequest(phone: "", password: "");
+    await getLocalUsername().then((phone) {
+      loginRequest.phone = phone ?? "";
     });
     login(loginRequest);
   }
@@ -35,6 +35,7 @@ class AuthenticationCubit extends Cubit<CubitState> {
   Future<bool> loginValid(LoginRequest loginRequest) async {
     var params = loginRequest.toJson();
     var response = await BaseService.postData(ServicePath.login, params);
+    print(response);
     var result = LoginResponse.loginResponse(response);
     if (result == null) return false;
     saveLoginData(loginRequest);
@@ -51,15 +52,18 @@ class AuthenticationCubit extends Cubit<CubitState> {
 
   /// Local Storage
   void saveLoginData(LoginRequest loginRequest) {
-    SharedPref.save(SharedPrefPath.username, loginRequest.username);
+    SharedPref.save(SharedPrefPath.phone, loginRequest.phone);
   }
 
   void saveToken(LoginResponse loginResponse) {
     SharedPref.save(SharedPrefPath.token, loginResponse.token);
-    SharedPref.save(SharedPrefPath.refreshToken, loginResponse.refreshToken);
+    // SharedPref.save(
+    //   SharedPrefPath.refreshToken,
+    //   loginResponse.refreshToken,
+    // );
   }
 
   Future<dynamic> getLocalUsername() async {
-    return SharedPref.read("username");
+    return SharedPref.read("phone");
   }
 }

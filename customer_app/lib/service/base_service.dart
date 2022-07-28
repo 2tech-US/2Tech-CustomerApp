@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:jwt_decoder/jwt_decoder.dart';
 
 class BaseService {
   static Map<String, String> getHeaders({String? token}) {
@@ -26,7 +25,7 @@ class BaseService {
       String uri, Map<String, dynamic> params) async {
     http.Response response = await http.Client()
         .post(Uri.parse(uri), headers: getHeaders(), body: jsonEncode(params));
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return json.decode(response.body);
     }
     return null;
@@ -53,30 +52,12 @@ class BaseService {
   //   return null;
   // }
 
-  // /// Support Function
-  // static Future<bool> checkToken() async {
-  //   String? currentToken = await SharedPref.read(SharedPrefPath.token);
-  //   if (currentToken != null && !isTokenExpired(currentToken)) {
-  //     return true;
-  //   }
-  //   return false;
+  // static bool isTokenExpired(String token) {
+  //   return JwtDecoder.isExpired(token);
   // }
 
-  // static Future<bool> checkRefreshToken() async {
-  //   String? currentRefreshToken =
-  //       await SharedPref.read(SharedPrefPath.refreshToken);
-  //   if (currentRefreshToken != null && !isTokenExpired(currentRefreshToken)) {
-  //     return true;
-  //   }
-  //   return false;
+  // static Future<String?> getToken(String refreshToken) async {
+  //   // TODO: Get token by refresh token
+  //   return null;
   // }
-
-  static bool isTokenExpired(String token) {
-    return JwtDecoder.isExpired(token);
-  }
-
-  static Future<String?> getToken(String refreshToken) async {
-    // TODO: Get token by refresh token
-    return null;
-  }
 }

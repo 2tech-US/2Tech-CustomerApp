@@ -27,6 +27,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    _phoneController.text = "0375750518";
+    _passwordController.text = "12345678";
   }
 
   @override
@@ -151,16 +153,18 @@ class _LoginPageState extends State<LoginPage> {
     final String password = _passwordController.text;
     if (validLoginData()) {
       bool validUserInput = await BlocProvider.of<AuthenticationCubit>(context)
-          .loginValid(LoginRequest(username: phone, password: password));
+          .loginValid(LoginRequest(phone: phone, password: password));
       if (validUserInput) {
-        BlocProvider.of<AppCubit>(context).authenticate();
-        showSnackbarMsg(context, "Đăng nhập thành công!");
+        await BlocProvider.of<AppCubit>(context).authenticate();
+        showSnackbarMsg(context, "Đăng nhập thành công");
+        print('login success');
         return;
       }
       _clearPassword();
       setState(() {
         _phoneError = "Số điện thoại hoặc mật khẩu không đúng";
       });
+      print('login fail');
     }
   }
 

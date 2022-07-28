@@ -3,6 +3,7 @@ import 'package:customer_app/models/shared_preferences/shared_preferences_model.
 import 'package:customer_app/service/base_service.dart';
 import 'package:customer_app/service/service_path.dart';
 import 'package:customer_app/widgets/custom_alert_dialog/custom_alert_dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
@@ -129,5 +130,45 @@ class AppCubit extends Cubit<CubitState> {
   void clearToken() {
     SharedPref.remove(SharedPrefPath.token);
     SharedPref.remove(SharedPrefPath.refreshToken);
+  }
+
+  /// Show a loading dialog
+  void showLoaderDialog(BuildContext context) {
+    Dialog alert = const Dialog(
+        elevation: 0,
+        insetPadding: EdgeInsets.zero,
+        backgroundColor: Colors.transparent,
+        child: SizedBox(
+          height: 100,
+          child: CupertinoActivityIndicator(
+            radius: 24,
+            color: Colors.white,
+          ),
+        ));
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  /// This function shaw a transparent layer to avoid touching
+  /// any part of the screen (buttons, textfields, ...)
+  void showTransparentDialog(BuildContext context) {
+    Dialog alert = const Dialog(
+        elevation: 0,
+        insetPadding: EdgeInsets.zero,
+        backgroundColor: Colors.transparent,
+        child: SizedBox());
+    showDialog(
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }
