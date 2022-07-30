@@ -83,16 +83,17 @@ class _OTPRegisterPageState extends State<OTPRegisterPage> {
                     CustomButton.common(
                       onTap: () {
                         Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return const RegisterInformationPage();
-                        }));
+                            .popUntil((route) => route.isFirst);
                       },
                       content: "Xác nhận",
                     ),
                     SizedBox(height: size.height * 0.01),
                     TextButton.icon(
                       onPressed: () {
-                        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoginPage()), (route) => route.isFirst);
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()),
+                            (route) => route.isFirst);
                       },
                       icon: const Icon(
                         Icons.arrow_back,

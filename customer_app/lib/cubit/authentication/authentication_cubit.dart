@@ -44,9 +44,11 @@ class AuthenticationCubit extends Cubit<CubitState> {
 
   Future<int> registerValid(RegisterRequest registerRequest) async {
     var params = registerRequest.toJson();
+    print('Params: $params');
     var response = await BaseService.postData(ServicePath.register, params);
+    print('Response: $response');
     var result = RegisterRequest.registerSuccessful(response);
-    print(result);
+    print("Result: $result");
     return result ?? 404;
   }
 

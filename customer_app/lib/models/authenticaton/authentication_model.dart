@@ -40,7 +40,7 @@ class RegisterRequest {
   });
 
   Map<String, dynamic> toJson() =>
-      {"phone": phone, "name": name, "password": password, role: role};
+      {"phone": phone, "password": password, "name": name, "role": role};
 
   static int? registerSuccessful(Map<String, dynamic>? json) {
     if (json == null) return null;

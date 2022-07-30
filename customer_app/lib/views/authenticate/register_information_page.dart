@@ -168,10 +168,11 @@ class _RegisterInformationPageState extends State<RegisterInformationPage> {
       int validUserInput = await BlocProvider.of<AuthenticationCubit>(context)
           .registerValid(RegisterRequest(
               name: name,
-              phone: phone,
               password: password,
+              phone: phone,
               confirmPassword: confirmPassword));
-      if (validUserInput == 200) {
+      print("ValidUserInput: $validUserInput");
+      if (validUserInput == 200 || validUserInput == 201) {
         print("Register success");
         Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => const RegisterPhonePage()));

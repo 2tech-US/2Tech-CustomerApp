@@ -35,9 +35,8 @@ class MyApp extends StatelessWidget {
             initialRoute: '/',
             debugShowCheckedModeBanner: false,
             theme: baseTheme(),
-            home:
-                // const AppCubitLogic(),
-                const HomePage(),
+            home: const AppCubitLogic(),
+            // const HomePage(),
           );
         },
       ),
