@@ -21,18 +21,18 @@ class RegisterInformationPage extends StatefulWidget {
 
 class _RegisterInformationPageState extends State<RegisterInformationPage> {
   String? _nameError;
-  String? _usernameError;
+  String? _phoneError;
   String? _passwordError;
   String? _confirmPasswordError;
   final _nameController = TextEditingController();
-  final _usernameController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
     _nameController.dispose();
-    _usernameController.dispose();
+    _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
@@ -77,24 +77,24 @@ class _RegisterInformationPageState extends State<RegisterInformationPage> {
           onChanged: (value) {
             _clearError();
           },
-          textEditingController: _nameController,
-          errorText: _nameError,
-          labelText: "Tên đăng nhập",
-          hintText: "Nhập tên của bạn",
+          textEditingController: _phoneController,
+          errorText: _phoneError,
+          labelText: "Số điện thoại",
+          hintText: "Nhập số điện thoại của bạn",
           required: true,
-          textInputType: TextInputType.text,
+          textInputType: TextInputType.number,
           textInputAction: TextInputAction.next),
       const SizedBox(height: 16),
       CustomTextField.common(
           onChanged: (value) {
             _clearError();
           },
-          textEditingController: _usernameController,
-          errorText: _usernameError,
-          labelText: "Địa chỉ",
-          hintText: "Nhập địa chỉ của bạn",
+          textEditingController: _nameController,
+          errorText: _nameError,
+          labelText: "Tên đăng nhập",
+          hintText: "Nhập tên của bạn",
           required: true,
-          textInputType: TextInputType.emailAddress,
+          textInputType: TextInputType.text,
           textInputAction: TextInputAction.next),
       const SizedBox(height: 16),
       CustomTextField.common(
@@ -161,7 +161,7 @@ class _RegisterInformationPageState extends State<RegisterInformationPage> {
 
   void valid() async {
     final String name = _nameController.text;
-    final String phone = _usernameController.text;
+    final String phone = _phoneController.text;
     final String password = _passwordController.text;
     final String confirmPassword = _confirmPasswordController.text;
     if (validRegisterData()) {
@@ -180,7 +180,7 @@ class _RegisterInformationPageState extends State<RegisterInformationPage> {
       if (validUserInput == 400) {
         _clearPassword();
         setState(() {
-          _usernameError = "Email này đã tồn tại";
+          _phoneError = "Số điện thoại này đã tồn tại";
         });
         return;
       }
@@ -194,7 +194,7 @@ class _RegisterInformationPageState extends State<RegisterInformationPage> {
 
   bool validRegisterData() {
     final String name = _nameController.text;
-    final String phone = _usernameController.text;
+    final String phone = _phoneController.text;
     final String password = _passwordController.text;
     final String confirmPassword = _confirmPasswordController.text;
     if (AuthenticationLogic.checkName(name) != null) {
@@ -206,7 +206,7 @@ class _RegisterInformationPageState extends State<RegisterInformationPage> {
     }
     if (AuthenticationLogic.checkPhoneNumber(phone) != null) {
       setState(() {
-        _usernameError = AuthenticationLogic.checkPhoneNumber(phone);
+        _phoneError = AuthenticationLogic.checkPhoneNumber(phone);
       });
       _clearPassword();
       return false;
@@ -248,7 +248,7 @@ class _RegisterInformationPageState extends State<RegisterInformationPage> {
   void _clearError() {
     setState(() {
       _nameError = null;
-      _usernameError = null;
+      _phoneError = null;
       _passwordError = null;
       _confirmPasswordError = null;
     });

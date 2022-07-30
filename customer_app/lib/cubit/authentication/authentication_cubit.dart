@@ -35,7 +35,6 @@ class AuthenticationCubit extends Cubit<CubitState> {
   Future<bool> loginValid(LoginRequest loginRequest) async {
     var params = loginRequest.toJson();
     var response = await BaseService.postData(ServicePath.login, params);
-    print(response);
     var result = LoginResponse.loginResponse(response);
     if (result == null) return false;
     saveLoginData(loginRequest);
@@ -47,6 +46,7 @@ class AuthenticationCubit extends Cubit<CubitState> {
     var params = registerRequest.toJson();
     var response = await BaseService.postData(ServicePath.register, params);
     var result = RegisterRequest.registerSuccessful(response);
+    print(result);
     return result ?? 404;
   }
 
