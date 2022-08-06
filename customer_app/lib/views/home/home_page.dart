@@ -1,5 +1,6 @@
 import 'package:customer_app/cubit/app_cubit.dart';
 import 'package:customer_app/utils/base_constant.dart';
+import 'package:customer_app/widgets/destination_selection/destination_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:customer_app/widgets/map/gmap.dart';
@@ -49,6 +50,12 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         children: <Widget>[
           Gmap(scaffoldState: scaffoldState),
+          Visibility(
+            visible: true,
+            child: DestinationSelectionWidget(
+              scaffoldState: scaffoldState,
+            ),
+          ),
         ],
       ),
     ));

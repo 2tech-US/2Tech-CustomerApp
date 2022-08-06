@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:customer_app/utils/base_constant.dart';
 import 'package:customer_app/views/authenticate/login_page.dart';
-import 'package:customer_app/views/authenticate/register_information_page.dart';
 import 'package:customer_app/widgets/custom_button/custom_button.dart';
 import 'package:customer_app/widgets/otp_option/otp_option.dart';
 import 'package:customer_app/widgets/template_page/common_page.dart';
@@ -82,6 +81,7 @@ class _OTPRegisterPageState extends State<OTPRegisterPage> {
                     SizedBox(height: size.height * 0.05),
                     CustomButton.common(
                       onTap: () {
+                        showSnackbarMsg(context, "Đăng ký thành công");
                         Navigator.of(context)
                             .popUntil((route) => route.isFirst);
                       },
@@ -112,5 +112,20 @@ class _OTPRegisterPageState extends State<OTPRegisterPage> {
         ),
       ),
     );
+  }
+
+  void showSnackbarMsg(BuildContext context, String content) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: BaseColor.hint,
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 80),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      content: Text(
+        content,
+        textAlign: TextAlign.center,
+        style: BaseTextStyle.fontFamilyRegular(Colors.white, 14),
+      ),
+      duration: const Duration(seconds: 2),
+    ));
   }
 }
