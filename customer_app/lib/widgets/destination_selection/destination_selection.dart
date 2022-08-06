@@ -190,12 +190,12 @@ class _DestinationSelectionWidgetState
   Future<Null> displayPrediction(Prediction? p, ScaffoldState? scaffold) async {
     if (p != null) {
       // get detail (lat/lng)
-      GoogleMapsPlaces _places = GoogleMapsPlaces(
+      GoogleMapsPlaces places = GoogleMapsPlaces(
         apiKey: ServicePath.googleMapsAPIKey,
         apiHeaders: await const GoogleApiHeaders().getHeaders(),
       );
       PlacesDetailsResponse detail =
-          await _places.getDetailsByPlaceId(p.placeId!);
+          await places.getDetailsByPlaceId(p.placeId!);
       final lat = detail.result.geometry!.location.lat;
       final lng = detail.result.geometry!.location.lng;
 

@@ -5,5 +5,5 @@ class ServicePath {
 
   //Google maps
   static const String googleMapsAPIKey =
-      "AIzaSyC_MPgcB-GAIUYap_caF_lQdB1UqFIEhMg";
+      "AIzaSyDH75bfzU1Vy1VqSOAPBrVZ_OUCOlnLE8E";
 }
