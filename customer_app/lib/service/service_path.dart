@@ -3,6 +3,9 @@ class ServicePath {
   static const String login = "$apiUrl/auth/login";
   static const String register = "$apiUrl/auth/register";
 
+  //Passenger
+  static const String getPassengerInfor = "$apiUrl/passengers/";
+
   //Google maps
   static const String googleMapsAPIKey =
       "AIzaSyDH75bfzU1Vy1VqSOAPBrVZ_OUCOlnLE8E";

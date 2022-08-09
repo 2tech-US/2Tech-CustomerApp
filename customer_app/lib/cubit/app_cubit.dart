@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:customer_app/models/shared_preferences/shared_preferences_model.dart';
+import 'package:customer_app/models/user/user_model.dart';
 import 'package:customer_app/service/base_service.dart';
 import 'package:customer_app/service/service_path.dart';
 import 'package:customer_app/widgets/custom_alert_dialog/custom_alert_dialog.dart';
@@ -20,9 +21,21 @@ class AppCubit extends Cubit<CubitState> {
   }
 
   Future<void> authenticate() async {
+    // String? currentToken = await SharedPref.read(SharedPrefPath.token);
+    // if (currentToken != null && !isTokenExpired(currentToken)) {
+    //   emit(AuthenticatedState());
+    // }
     String? currentToken = await SharedPref.read(SharedPrefPath.token);
+    String? currentPhone = await SharedPref.read(SharedPrefPath.phone);
     if (currentToken != null && !isTokenExpired(currentToken)) {
-      emit(AuthenticatedState());
+      var response = await BaseService.getData(
+          ServicePath.getPassengerInfor + currentPhone!,
+          token: currentToken);
+      print('Response: $response');
+      if (response != null) {
+        var result = User.loginResponse(response);
+        emit(AuthenticatedState(result));
+      }
     }
   }
 

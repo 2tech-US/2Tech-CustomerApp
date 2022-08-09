@@ -13,9 +13,12 @@ class ConnectErrorState extends CubitState {
 }
 
 class AuthenticatedState extends CubitState {
+  AuthenticatedState(this.user);
+
+  final User user;
 
   // @override
-  List<Object> get props => [];
+  List<Object> get props => [user];
 }
 
 class UnauthenticatedState extends CubitState {

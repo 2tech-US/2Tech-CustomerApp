@@ -1,4 +1,6 @@
 import 'package:customer_app/cubit/home/home_cubit.dart';
+import 'package:customer_app/models/shared_preferences/shared_preferences_model.dart';
+import 'package:customer_app/service/base_service.dart';
 import 'package:customer_app/service/service_path.dart';
 import 'package:customer_app/utils/base_constant.dart';
 import 'package:customer_app/widgets/custom_button/custom_button.dart';
@@ -100,7 +102,15 @@ class _PickupSelectionWidgetState extends State<PickupSelectionWidget> {
                   right: 15.0,
                 ),
                 child: CustomButton.common(
-                  onTap: () {},
+                  onTap: () async {
+                    String? currentToken =
+                        await SharedPref.read(SharedPrefPath.token);
+
+                    var response = await BaseService.getData(
+                        '${ServicePath.getPassengerInfor}/0375750518',
+                        token: currentToken);
+                    print(response);
+                  },
                   content: "Xác nhận điểm đón",
                 ),
               ),
