@@ -1,14 +1,13 @@
-import 'dart:developer';
-
+import 'package:customer_app/cubit/home/home_cubit.dart';
 import 'package:customer_app/service/service_path.dart';
 import 'package:customer_app/utils/base_constant.dart';
+import 'package:customer_app/widgets/pickup_selection/pickup_selection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DestinationSelectionWidget extends StatefulWidget {
   const DestinationSelectionWidget({Key? key, required this.scaffoldState})
@@ -24,6 +23,7 @@ class _DestinationSelectionWidgetState
     extends State<DestinationSelectionWidget> {
   GlobalKey<ScaffoldState> scaffoldSate = GlobalKey<ScaffoldState>();
   TextEditingController destinationController = TextEditingController();
+  final Set<Marker> _markers = {};
 
   @override
   void initState() {
@@ -96,7 +96,7 @@ class _DestinationSelectionWidgetState
                   ),
                 ),
                 title: const Text("Home"),
-                subtitle: const Text("25th avenue, 23 street"),
+                subtitle: const Text("102 QT, GV"),
               ),
               ListTile(
                 leading: CircleAvatar(
@@ -107,7 +107,7 @@ class _DestinationSelectionWidgetState
                   ),
                 ),
                 title: Text("Work"),
-                subtitle: Text("25th avenue, 23 street"),
+                subtitle: Text("227 Nguyễn Văn Cừ, HCMC"),
               ),
               ListTile(
                 leading: CircleAvatar(
@@ -118,7 +118,7 @@ class _DestinationSelectionWidgetState
                   ),
                 ),
                 title: const Text("Recent location"),
-                subtitle: const Text("25th avenue, 23 street"),
+                subtitle: const Text("227 Nguyễn Văn Cừ, HCMC"),
               ),
               ListTile(
                 leading: CircleAvatar(
@@ -129,7 +129,7 @@ class _DestinationSelectionWidgetState
                   ),
                 ),
                 title: const Text("Recent location"),
-                subtitle: const Text("25th avenue, 23 street"),
+                subtitle: const Text("102 Quang Trung, HCMC"),
               ),
             ],
           ),
@@ -166,7 +166,9 @@ class _DestinationSelectionWidgetState
       components: [Component(Component.country, "vn")],
     );
 
-    displayPrediction(p, scaffoldSate.currentState);
+    await displayPrediction(p, scaffoldSate.currentState);
+    BlocProvider.of<HomeCubit>(context).pickupSelection();
+
     // PlacesDetailsResponse detail =
     //     await places.getDetailsByPlaceId(p.placeId);
     // double lat = detail.result.geometry.location.lat;
@@ -187,7 +189,7 @@ class _DestinationSelectionWidgetState
         .showSnackBar(SnackBar(content: Text(response.errorMessage!)));
   }
 
-  Future<Null> displayPrediction(Prediction? p, ScaffoldState? scaffold) async {
+  Future<void> displayPrediction(Prediction? p, ScaffoldState? scaffold) async {
     if (p != null) {
       // get detail (lat/lng)
       GoogleMapsPlaces places = GoogleMapsPlaces(
@@ -198,10 +200,22 @@ class _DestinationSelectionWidgetState
           await places.getDetailsByPlaceId(p.placeId!);
       final lat = detail.result.geometry!.location.lat;
       final lng = detail.result.geometry!.location.lng;
+      addDestinationMarker(LatLng(lat, lng));
 
       scaffold!.showSnackBar(
         SnackBar(content: Text("${p.description} - $lat/$lng")),
       );
     }
+  }
+
+  void addDestinationMarker(LatLng position) {
+    _markers.add(Marker(
+      markerId: const MarkerId("destination"),
+      position: position,
+      anchor: const Offset(0, 0.85),
+      zIndex: 3,
+      infoWindow: const InfoWindow(title: "Điểm đến"),
+      icon: BitmapDescriptor.defaultMarker,
+    ));
   }
 }
