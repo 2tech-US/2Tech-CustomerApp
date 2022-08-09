@@ -6,6 +6,10 @@ part 'home_state.dart';
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(DestinationSelectState());
 
+  void destinationSeletion() {
+    emit(DestinationSelectState());
+  }
+
   void pickupSelection() {
     emit(PickupSeletionState());
   }

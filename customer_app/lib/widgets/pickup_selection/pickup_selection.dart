@@ -1,8 +1,10 @@
+import 'package:customer_app/cubit/home/home_cubit.dart';
 import 'package:customer_app/service/service_path.dart';
 import 'package:customer_app/utils/base_constant.dart';
 import 'package:customer_app/widgets/custom_button/custom_button.dart';
 import 'package:customer_app/widgets/destination_selection/destination_selection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_api_headers/google_api_headers.dart';
@@ -31,14 +33,16 @@ class _PickupSelectionWidgetState extends State<PickupSelectionWidget> {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: 0.28,
-      minChildSize: 0.28,
+      initialChildSize: 0.35,
+      minChildSize: 0.35,
       builder: (BuildContext context, myscrollController) {
         return Container(
-          decoration: BoxDecoration(color: Colors.white,
-//                        borderRadius: BorderRadius.only(
-//                            topLeft: Radius.circular(20),
-//                            topRight: Radius.circular(20)),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
               boxShadow: [
                 BoxShadow(
                     color: Colors.grey.withOpacity(.8),
@@ -101,6 +105,15 @@ class _PickupSelectionWidgetState extends State<PickupSelectionWidget> {
                 ),
               ),
             ),
+            TextButton.icon(
+                onPressed: () {
+                  BlocProvider.of<HomeCubit>(context).destinationSeletion();
+                },
+                icon: const Icon(Icons.arrow_back,
+                    size: 15, color: Color.fromRGBO(0, 51, 153, 1)),
+                label: Text("Quay lại",
+                    style: BaseTextStyle.fontFamilySemiBold(
+                        BaseColor.primary, 14)))
           ]),
         );
       },
