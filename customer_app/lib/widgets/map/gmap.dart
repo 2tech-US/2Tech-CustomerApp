@@ -4,10 +4,15 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Gmap extends StatefulWidget {
-  const Gmap({Key? key, required this.scaffoldState, this.marker})
-      : super(key: key);
+  const Gmap({
+    Key? key,
+    required this.scaffoldState,
+    this.marker,
+    required this.onMapCreated,
+  }) : super(key: key);
   final GlobalKey<ScaffoldState> scaffoldState;
   final Marker? marker;
+  final MapCreatedCallback onMapCreated;
 
   @override
   State<Gmap> createState() => _GmapState();
@@ -62,11 +67,6 @@ class _GmapState extends State<Gmap> {
     scaffoldSate = widget.scaffoldState;
   }
 
-  late final CameraPosition _destination = CameraPosition(
-    target: widget.marker!.position,
-    zoom: 10.5,
-  );
-
   @override
   Widget build(BuildContext context) {
     print("Lat in GGMAP: ${widget.marker!.position}");
@@ -82,9 +82,7 @@ class _GmapState extends State<Gmap> {
         onMapCreated: (GoogleMapController controller) {
           _mapController = controller;
           _determinePosition();
-          widget.marker ??
-              _mapController
-                  .animateCamera(CameraUpdate.newCameraPosition(_destination));
+          widget.onMapCreated(controller);
         },
       ),
       Positioned(

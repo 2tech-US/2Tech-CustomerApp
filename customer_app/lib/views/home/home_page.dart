@@ -19,6 +19,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var scaffoldState = GlobalKey<ScaffoldState>();
   Marker mark = Marker(markerId: MarkerId("destination"));
+  late GoogleMapController mapController;
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +69,8 @@ class _HomePageState extends State<HomePage> {
                       Gmap(
                         scaffoldState: scaffoldState,
                         marker: mark,
+                        onMapCreated: (controller) =>
+                            mapController = controller,
                       ),
                       Visibility(
                         visible: homeState is DestinationSelectState,
@@ -77,6 +80,12 @@ class _HomePageState extends State<HomePage> {
                             setState(() {
                               mark = marker;
                             });
+                            mapController.animateCamera(
+                                CameraUpdate.newCameraPosition(CameraPosition(
+                              target: mark.position,
+                              zoom: 10.5,
+                            )));
+                            mapController.showMarkerInfoWindow(mark.markerId);
                           },
                         ),
                       ),

@@ -26,7 +26,6 @@ class _DestinationSelectionWidgetState
     extends State<DestinationSelectionWidget> {
   GlobalKey<ScaffoldState> scaffoldSate = GlobalKey<ScaffoldState>();
   final TextEditingController _destinationController = TextEditingController();
-  final List<Marker> _markers = [];
 
   @override
   void initState() {
