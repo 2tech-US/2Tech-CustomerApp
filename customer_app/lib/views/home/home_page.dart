@@ -7,6 +7,7 @@ import 'package:customer_app/widgets/template_page/app_loading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:customer_app/widgets/map/gmap.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,9 +18,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var scaffoldState = GlobalKey<ScaffoldState>();
+  Marker mark = Marker(markerId: MarkerId("destination"));
 
   @override
   Widget build(BuildContext context) {
+    print("Marker in Home: ${mark.position}");
     return BlocBuilder<AppCubit, CubitState>(
       builder: (context, appState) {
         if (appState is AuthenticatedState) {
@@ -62,11 +65,19 @@ class _HomePageState extends State<HomePage> {
                   ),
                   body: Stack(
                     children: <Widget>[
-                      Gmap(scaffoldState: scaffoldState),
+                      Gmap(
+                        scaffoldState: scaffoldState,
+                        marker: mark,
+                      ),
                       Visibility(
                         visible: homeState is DestinationSelectState,
                         child: DestinationSelectionWidget(
                           scaffoldState: scaffoldState,
+                          callBack: (marker) {
+                            setState(() {
+                              mark = marker;
+                            });
+                          },
                         ),
                       ),
                       Visibility(

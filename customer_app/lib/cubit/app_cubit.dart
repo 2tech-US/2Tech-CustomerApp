@@ -31,7 +31,6 @@ class AppCubit extends Cubit<CubitState> {
       var response = await BaseService.getData(
           ServicePath.getPassengerInfor + currentPhone!,
           token: currentToken);
-      print('Response: $response');
       if (response != null) {
         var result = User.loginResponse(response);
         emit(AuthenticatedState(result));

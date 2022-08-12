@@ -9,8 +9,15 @@ class AppLoadingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CommonPage(
-        content: Center(
+        content: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Center(
             child: Image.asset("assets/images/app_logo.png",
-                width: min(300, MediaQuery.of(context).size.width * 0.5), fit: BoxFit.fitWidth)));
+                width: min(300, MediaQuery.of(context).size.width * 0.5),
+                fit: BoxFit.fitWidth)),
+        const CircularProgressIndicator(),
+      ],
+    ));
   }
 }

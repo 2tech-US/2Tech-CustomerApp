@@ -4,8 +4,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Gmap extends StatefulWidget {
-  const Gmap({Key? key, required this.scaffoldState}) : super(key: key);
+  const Gmap({Key? key, required this.scaffoldState, this.marker})
+      : super(key: key);
   final GlobalKey<ScaffoldState> scaffoldState;
+  final Marker? marker;
 
   @override
   State<Gmap> createState() => _GmapState();
@@ -16,8 +18,6 @@ class _GmapState extends State<Gmap> {
   late Position currentPosition;
   // GoogleMapsPlaces googlePlaces;
   TextEditingController destinationController = TextEditingController();
-  Color darkBlue = Colors.black;
-  Color grey = Colors.grey;
   GlobalKey<ScaffoldState> scaffoldSate = GlobalKey<ScaffoldState>();
 
   void _determinePosition() async {
@@ -51,7 +51,7 @@ class _GmapState extends State<Gmap> {
         .animateCamera(CameraUpdate.newCameraPosition(_myCurrentLocation));
   }
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
+  static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
@@ -62,19 +62,29 @@ class _GmapState extends State<Gmap> {
     scaffoldSate = widget.scaffoldState;
   }
 
+  late final CameraPosition _destination = CameraPosition(
+    target: widget.marker!.position,
+    zoom: 10.5,
+  );
+
   @override
   Widget build(BuildContext context) {
+    print("Lat in GGMAP: ${widget.marker!.position}");
     return Stack(children: <Widget>[
       GoogleMap(
         initialCameraPosition: _kGooglePlex,
         myLocationEnabled: true,
         mapType: MapType.normal,
+        markers: {widget.marker!},
         compassEnabled: true,
         zoomGesturesEnabled: true,
         rotateGesturesEnabled: true,
         onMapCreated: (GoogleMapController controller) {
           _mapController = controller;
           _determinePosition();
+          widget.marker ??
+              _mapController
+                  .animateCamera(CameraUpdate.newCameraPosition(_destination));
         },
       ),
       Positioned(

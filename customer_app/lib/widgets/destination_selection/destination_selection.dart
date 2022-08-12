@@ -1,6 +1,7 @@
 import 'package:customer_app/cubit/home/home_cubit.dart';
 import 'package:customer_app/service/service_path.dart';
 import 'package:customer_app/utils/base_constant.dart';
+import 'package:customer_app/widgets/map/gmap.dart';
 import 'package:customer_app/widgets/pickup_selection/pickup_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,9 +11,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 
 class DestinationSelectionWidget extends StatefulWidget {
-  const DestinationSelectionWidget({Key? key, required this.scaffoldState})
+  const DestinationSelectionWidget(
+      {Key? key, required this.scaffoldState, required this.callBack})
       : super(key: key);
   final GlobalKey<ScaffoldState> scaffoldState;
+  final Function(Marker) callBack;
 
   @override
   State<DestinationSelectionWidget> createState() =>
@@ -22,8 +25,8 @@ class DestinationSelectionWidget extends StatefulWidget {
 class _DestinationSelectionWidgetState
     extends State<DestinationSelectionWidget> {
   GlobalKey<ScaffoldState> scaffoldSate = GlobalKey<ScaffoldState>();
-  TextEditingController destinationController = TextEditingController();
-  final Set<Marker> _markers = {};
+  final TextEditingController _destinationController = TextEditingController();
+  final List<Marker> _markers = [];
 
   @override
   void initState() {
@@ -64,7 +67,7 @@ class _DestinationSelectionWidgetState
                   child: TextField(
                     onTap: _onTapped,
                     textInputAction: TextInputAction.go,
-                    controller: destinationController,
+                    controller: _destinationController,
                     cursorColor: Colors.blue.shade900,
                     decoration: InputDecoration(
                       icon: Container(
@@ -167,7 +170,6 @@ class _DestinationSelectionWidgetState
     );
 
     await displayPrediction(p, scaffoldSate.currentState);
-    BlocProvider.of<HomeCubit>(context).pickupSelection();
 
     // PlacesDetailsResponse detail =
     //     await places.getDetailsByPlaceId(p.placeId);
@@ -200,22 +202,27 @@ class _DestinationSelectionWidgetState
           await places.getDetailsByPlaceId(p.placeId!);
       final lat = detail.result.geometry!.location.lat;
       final lng = detail.result.geometry!.location.lng;
-      addDestinationMarker(LatLng(lat, lng));
+      widget.callBack(addDestinationMarker(LatLng(lat, lng), p.description!));
+
+      BlocProvider.of<HomeCubit>(context).pickupSelection();
 
       scaffold!.showSnackBar(
-        SnackBar(content: Text("${p.description} - $lat/$lng")),
+        SnackBar(content: Text("Điểm đến của bạn: ${p.description}")),
       );
+    } else {
+      scaffold!.showSnackBar(
+          const SnackBar(content: Text("Vui lòng nhập điểm đến của bạn!")));
     }
   }
 
-  void addDestinationMarker(LatLng position) {
-    _markers.add(Marker(
+  Marker addDestinationMarker(LatLng position, String description) {
+    return Marker(
       markerId: const MarkerId("destination"),
       position: position,
       anchor: const Offset(0, 0.85),
       zIndex: 3,
-      infoWindow: const InfoWindow(title: "Điểm đến"),
+      infoWindow: InfoWindow(title: description),
       icon: BitmapDescriptor.defaultMarker,
-    ));
+    );
   }
 }
