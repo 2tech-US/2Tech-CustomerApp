@@ -103,6 +103,11 @@ class _PickupSelectionWidgetState extends State<PickupSelectionWidget> {
                           content: Text("Vui lòng nhập vị trí đón!")));
                       return;
                     }
+                    scaffoldSate.currentState!.showSnackBar(
+                      SnackBar(
+                          content: Text(
+                              "Vị trí đón của bạn: ${pickupLocationController.text}")),
+                    );
                     BlocProvider.of<HomeCubit>(context).paymentSelection();
                   },
                   content: "Xác nhận điểm đón",
@@ -181,9 +186,7 @@ class _PickupSelectionWidgetState extends State<PickupSelectionWidget> {
       final lat = detail.result.geometry!.location.lat;
       final lng = detail.result.geometry!.location.lng;
 
-      scaffold!.showSnackBar(
-        SnackBar(content: Text("Vị trí đón của bạn: ${p.description}")),
-      );
+      pickupLocationController.text = p.description!;
     }
   }
 }
