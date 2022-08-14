@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
                                   Colors.black, 18),
                             ),
                             accountEmail: Text(
-                              "Phone: ${appState.user.phone}",
+                              "SĐT: ${appState.user.phone}",
                               style: BaseTextStyle.fontFamilyRegular(
                                   Colors.black, 17),
                             )),

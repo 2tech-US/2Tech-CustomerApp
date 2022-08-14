@@ -1,16 +1,15 @@
 import 'package:customer_app/cubit/home/home_cubit.dart';
-import 'package:customer_app/models/shared_preferences/shared_preferences_model.dart';
-import 'package:customer_app/service/base_service.dart';
 import 'package:customer_app/service/service_path.dart';
 import 'package:customer_app/utils/base_constant.dart';
 import 'package:customer_app/widgets/custom_button/custom_button.dart';
-import 'package:customer_app/widgets/destination_selection/destination_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class PickupSelectionWidget extends StatefulWidget {
   const PickupSelectionWidget({Key? key, required this.scaffoldState})
@@ -29,7 +28,7 @@ class _PickupSelectionWidgetState extends State<PickupSelectionWidget> {
   void initState() {
     super.initState();
     scaffoldSate = widget.scaffoldState;
-    pickupLocationController.text = 'Pickup Location';
+    getAddressFromLatLng();
   }
 
   @override
@@ -73,7 +72,6 @@ class _PickupSelectionWidgetState extends State<PickupSelectionWidget> {
                   readOnly: true,
                   textInputAction: TextInputAction.go,
                   controller: pickupLocationController,
-                  cursorColor: Colors.blue.shade900,
                   decoration: InputDecoration(
                     icon: Container(
                       margin: const EdgeInsets.only(left: 20, bottom: 15),
@@ -84,9 +82,6 @@ class _PickupSelectionWidgetState extends State<PickupSelectionWidget> {
                         color: BaseColor.primary,
                       ),
                     ),
-                    hintText: "Địa điểm đón",
-                    hintStyle:
-                        BaseTextStyle.fontFamilyRegular(Colors.black, 18),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.all(15),
                   ),
@@ -103,6 +98,11 @@ class _PickupSelectionWidgetState extends State<PickupSelectionWidget> {
                 ),
                 child: CustomButton.common(
                   onTap: () async {
+                    if (pickupLocationController.text.isEmpty) {
+                      scaffoldSate.currentState!.showSnackBar(const SnackBar(
+                          content: Text("Vui lòng nhập vị trí đón!")));
+                      return;
+                    }
                     BlocProvider.of<HomeCubit>(context).paymentSelection();
                   },
                   content: "Xác nhận điểm đón",
@@ -122,6 +122,16 @@ class _PickupSelectionWidgetState extends State<PickupSelectionWidget> {
         );
       },
     );
+  }
+
+  Future<void> getAddressFromLatLng() async {
+    Position currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        currentPosition.latitude, currentPosition.longitude);
+    Placemark address = placemarks[0];
+    pickupLocationController.text =
+        '${address.street!}, ${address.subLocality!}, ${address.subAdministrativeArea!}, ${address.administrativeArea!}, ${address.country!}';
   }
 
   Future<void> _onTapped() async {
@@ -172,7 +182,7 @@ class _PickupSelectionWidgetState extends State<PickupSelectionWidget> {
       final lng = detail.result.geometry!.location.lng;
 
       scaffold!.showSnackBar(
-        SnackBar(content: Text("${p.description} - $lat/$lng")),
+        SnackBar(content: Text("Vị trí đón của bạn: ${p.description}")),
       );
     }
   }

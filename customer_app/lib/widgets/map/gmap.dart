@@ -48,12 +48,12 @@ class _GmapState extends State<Gmap> {
 
     currentPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    CameraPosition _myCurrentLocation = CameraPosition(
+    CameraPosition myCurrentLocation = CameraPosition(
       target: LatLng(currentPosition.latitude, currentPosition.longitude),
       zoom: 14.4746,
     );
     _mapController
-        .animateCamera(CameraUpdate.newCameraPosition(_myCurrentLocation));
+        .animateCamera(CameraUpdate.newCameraPosition(myCurrentLocation));
   }
 
   static const CameraPosition _kGooglePlex = CameraPosition(
