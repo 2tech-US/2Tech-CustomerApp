@@ -48,10 +48,11 @@ class _PaymentMethodSelectionWidgetState
                 Center(
                   child: Text(
                     "Chọn hình thức thanh toán",
-                    style: BaseTextStyle.fontFamilyBold(Colors.black, 20),
+                    style: BaseTextStyle.fontFamilyMedium(Colors.black, 16),
                   ),
                 ),
-                const SizedBox(height: 22),
+                const Divider(),
+                const SizedBox(height: 8),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Row(
@@ -209,7 +210,6 @@ class _PaymentMethodSelectionWidgetState
                           ),
                         ),
                       ),
-                const SizedBox(height: 10),
                 TextButton.icon(
                     onPressed: () {
                       BlocProvider.of<HomeCubit>(context).pickupSelection();
