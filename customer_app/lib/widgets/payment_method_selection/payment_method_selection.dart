@@ -1,5 +1,7 @@
+import 'package:customer_app/cubit/home/home_cubit.dart';
 import 'package:customer_app/utils/base_constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -24,8 +26,8 @@ class _PaymentMethodSelectionWidgetState
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-        initialChildSize: 0.3,
-        minChildSize: 0.3,
+        initialChildSize: 0.35,
+        minChildSize: 0.35,
         builder: (BuildContext context, myscrollController) {
           return Container(
             decoration: BoxDecoration(
@@ -183,8 +185,8 @@ class _PaymentMethodSelectionWidgetState
                                                         "Hủy tìm kiếm",
                                                         style: BaseTextStyle
                                                             .fontFamilyRegular(
-                                                                Colors
-                                                                    .deepOrange,
+                                                                BaseColor
+                                                                    .secondary,
                                                                 16),
                                                       )),
                                                 ],
@@ -207,7 +209,16 @@ class _PaymentMethodSelectionWidgetState
                           ),
                         ),
                       ),
-                const SizedBox(height: 10)
+                const SizedBox(height: 10),
+                TextButton.icon(
+                    onPressed: () {
+                      BlocProvider.of<HomeCubit>(context).pickupSelection();
+                    },
+                    icon: const Icon(Icons.arrow_back,
+                        size: 15, color: Color.fromRGBO(0, 51, 153, 1)),
+                    label: Text("Quay lại",
+                        style: BaseTextStyle.fontFamilySemiBold(
+                            BaseColor.primary, 14)))
               ],
             ),
           );
