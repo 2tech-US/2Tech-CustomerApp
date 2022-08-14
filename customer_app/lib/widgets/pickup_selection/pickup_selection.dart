@@ -103,13 +103,7 @@ class _PickupSelectionWidgetState extends State<PickupSelectionWidget> {
                 ),
                 child: CustomButton.common(
                   onTap: () async {
-                    String? currentToken =
-                        await SharedPref.read(SharedPrefPath.token);
-
-                    var response = await BaseService.getData(
-                        '${ServicePath.getPassengerInfor}/0375750518',
-                        token: currentToken);
-                    print(response);
+                    BlocProvider.of<HomeCubit>(context).paymentSelection();
                   },
                   content: "Xác nhận điểm đón",
                 ),

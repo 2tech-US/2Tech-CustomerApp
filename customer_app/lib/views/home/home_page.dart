@@ -2,6 +2,7 @@ import 'package:customer_app/cubit/app_cubit.dart';
 import 'package:customer_app/cubit/home/home_cubit.dart';
 import 'package:customer_app/utils/base_constant.dart';
 import 'package:customer_app/widgets/destination_selection/destination_selection.dart';
+import 'package:customer_app/widgets/payment_method_selection/payment_method_selection.dart';
 import 'package:customer_app/widgets/pickup_selection/pickup_selection.dart';
 import 'package:customer_app/widgets/template_page/app_loading_page.dart';
 import 'package:flutter/material.dart';
@@ -92,6 +93,12 @@ class _HomePageState extends State<HomePage> {
                       Visibility(
                         visible: homeState is PickupSeletionState,
                         child: PickupSelectionWidget(
+                          scaffoldState: scaffoldState,
+                        ),
+                      ),
+                      Visibility(
+                        visible: homeState is PaymentSeletionState,
+                        child: PaymentMethodSelectionWidget(
                           scaffoldState: scaffoldState,
                         ),
                       ),

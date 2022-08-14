@@ -11,3 +11,8 @@ class PickupSeletionState extends HomeState {
   // @override
   List<Object> get props => [];
 }
+
+class PaymentSeletionState extends HomeState {
+  // @override
+  List<Object> get props => [];
+}

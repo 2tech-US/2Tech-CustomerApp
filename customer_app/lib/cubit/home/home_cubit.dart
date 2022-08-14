@@ -13,4 +13,8 @@ class HomeCubit extends Cubit<HomeState> {
   void pickupSelection() {
     emit(PickupSeletionState());
   }
+
+  void paymentSelection() {
+    emit(PaymentSeletionState());
+  }
 }
