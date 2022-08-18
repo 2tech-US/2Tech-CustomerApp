@@ -8,10 +8,12 @@ class Gmap extends StatefulWidget {
     Key? key,
     required this.scaffoldState,
     this.marker,
+    this.polylineCoordinates,
     required this.onMapCreated,
   }) : super(key: key);
   final GlobalKey<ScaffoldState> scaffoldState;
   final Marker? marker;
+  final List<LatLng>? polylineCoordinates;
   final MapCreatedCallback onMapCreated;
 
   @override
@@ -21,7 +23,6 @@ class Gmap extends StatefulWidget {
 class _GmapState extends State<Gmap> {
   late GoogleMapController _mapController;
   late Position currentPosition;
-  // GoogleMapsPlaces googlePlaces;
   TextEditingController destinationController = TextEditingController();
   GlobalKey<ScaffoldState> scaffoldSate = GlobalKey<ScaffoldState>();
 
@@ -70,6 +71,7 @@ class _GmapState extends State<Gmap> {
   @override
   Widget build(BuildContext context) {
     print("Lat in GGMAP: ${widget.marker!.position}");
+    print("PolylineCoordinates: ${widget.polylineCoordinates}");
     return Stack(children: <Widget>[
       GoogleMap(
         initialCameraPosition: _kGooglePlex,
@@ -79,6 +81,16 @@ class _GmapState extends State<Gmap> {
         compassEnabled: true,
         zoomGesturesEnabled: true,
         rotateGesturesEnabled: true,
+        polylines: widget.polylineCoordinates != null
+            ? {
+                Polyline(
+                  polylineId: const PolylineId("route"),
+                  points: widget.polylineCoordinates!,
+                  color: Colors.purple,
+                  width: 6,
+                )
+              }
+            : {},
         onMapCreated: (GoogleMapController controller) {
           _mapController = controller;
           _determinePosition();

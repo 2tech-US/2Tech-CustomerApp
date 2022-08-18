@@ -19,7 +19,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var scaffoldState = GlobalKey<ScaffoldState>();
-  Marker mark = Marker(markerId: MarkerId("destination"));
+  Marker mark = const Marker(markerId: MarkerId("destination"));
+  List<LatLng> polylinePoints = [];
   late GoogleMapController mapController;
 
   @override
@@ -70,6 +71,7 @@ class _HomePageState extends State<HomePage> {
                       Gmap(
                         scaffoldState: scaffoldState,
                         marker: mark,
+                        polylineCoordinates: polylinePoints,
                         onMapCreated: (controller) =>
                             mapController = controller,
                       ),
@@ -77,9 +79,10 @@ class _HomePageState extends State<HomePage> {
                         visible: homeState is DestinationSelectState,
                         child: DestinationSelectionWidget(
                           scaffoldState: scaffoldState,
-                          callBack: (marker) {
+                          callBack: (marker, polyPoints) {
                             setState(() {
                               mark = marker;
+                              polylinePoints = polyPoints;
                             });
                             mapController.animateCamera(
                                 CameraUpdate.newCameraPosition(CameraPosition(

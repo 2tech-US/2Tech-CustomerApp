@@ -6,6 +6,8 @@ import 'package:customer_app/widgets/pickup_selection/pickup_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -15,7 +17,7 @@ class DestinationSelectionWidget extends StatefulWidget {
       {Key? key, required this.scaffoldState, required this.callBack})
       : super(key: key);
   final GlobalKey<ScaffoldState> scaffoldState;
-  final Function(Marker) callBack;
+  final Function(Marker, List<LatLng>) callBack;
 
   @override
   State<DestinationSelectionWidget> createState() =>
@@ -201,7 +203,8 @@ class _DestinationSelectionWidgetState
           await places.getDetailsByPlaceId(p.placeId!);
       final lat = detail.result.geometry!.location.lat;
       final lng = detail.result.geometry!.location.lng;
-      widget.callBack(addDestinationMarker(LatLng(lat, lng), p.description!));
+      widget.callBack(addDestinationMarker(LatLng(lat, lng), p.description!),
+          await getPolyPoints(LatLng(lat, lng)));
 
       BlocProvider.of<HomeCubit>(context).pickupSelection();
 
@@ -223,5 +226,27 @@ class _DestinationSelectionWidgetState
       infoWindow: InfoWindow(title: description),
       icon: BitmapDescriptor.defaultMarker,
     );
+  }
+
+  Future<List<LatLng>> getPolyPoints(LatLng position) async {
+    List<LatLng> polylineCoordinates = [];
+
+    PolylinePoints polylinePoints = PolylinePoints();
+    Position currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      ServicePath.googleMapsAPIKey, // Google Maps API Key
+      PointLatLng(currentPosition.latitude, currentPosition.longitude),
+      PointLatLng(
+        position.latitude,
+        position.longitude,
+      ),
+    );
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) =>
+          polylineCoordinates.add(LatLng(point.latitude, point.longitude)));
+      // setState(() {});
+    }
+    return polylineCoordinates;
   }
 }
