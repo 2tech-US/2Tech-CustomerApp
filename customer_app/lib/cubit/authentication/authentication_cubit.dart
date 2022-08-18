@@ -4,7 +4,6 @@ import 'package:customer_app/models/authenticaton/authentication_model.dart';
 import 'package:customer_app/models/shared_preferences/shared_preferences_model.dart';
 import 'package:customer_app/service/base_service.dart';
 import 'package:customer_app/service/service_path.dart';
-
 part 'authentication_state.dart';
 
 class AuthenticationCubit extends Cubit<CubitState> {
@@ -13,7 +12,8 @@ class AuthenticationCubit extends Cubit<CubitState> {
   }
 
   void startAuth() async {
-    LoginRequest loginRequest = LoginRequest(phone: "", password: "");
+    LoginRequest loginRequest =
+        LoginRequest(phone: "", password: "", deviceToken: "");
     await getLocalUsername().then((phone) {
       loginRequest.phone = phone ?? "";
     });

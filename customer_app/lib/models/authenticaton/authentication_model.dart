@@ -19,10 +19,13 @@ class LoginResponse {
 class LoginRequest {
   String phone;
   String password;
+  String deviceToken;
 
-  LoginRequest({required this.phone, required this.password});
+  LoginRequest(
+      {required this.phone, required this.password, required this.deviceToken});
 
-  Map<String, dynamic> toJson() => {"phone": phone, "password": password};
+  Map<String, dynamic> toJson() =>
+      {"phone": phone, "password": password, "device_token": deviceToken};
 }
 
 class RegisterRequest {

@@ -153,7 +153,8 @@ class _LoginPageState extends State<LoginPage> {
     final String password = _passwordController.text;
     if (validLoginData()) {
       bool validUserInput = await BlocProvider.of<AuthenticationCubit>(context)
-          .loginValid(LoginRequest(phone: phone, password: password));
+          .loginValid(LoginRequest(
+              phone: phone, password: password, deviceToken: "abcd"));
       if (validUserInput) {
         await BlocProvider.of<AppCubit>(context).authenticate();
         showSnackbarMsg(context, "Đăng nhập thành công");
