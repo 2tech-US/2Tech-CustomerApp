@@ -1,14 +1,19 @@
 import 'package:customer_app/cubit/app_cubit.dart';
 import 'package:customer_app/cubit/home/home_cubit.dart';
+import 'package:customer_app/models/notification/notification_model.dart';
 import 'package:customer_app/utils/base_constant.dart';
 import 'package:customer_app/widgets/destination_selection/destination_selection.dart';
+import 'package:customer_app/widgets/notification/notification_badge.dart';
 import 'package:customer_app/widgets/payment_method_selection/payment_method_selection.dart';
 import 'package:customer_app/widgets/pickup_selection/pickup_selection.dart';
 import 'package:customer_app/widgets/template_page/app_loading_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:customer_app/widgets/map/gmap.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,6 +27,70 @@ class _HomePageState extends State<HomePage> {
   Marker mark = const Marker(markerId: MarkerId("destination"));
   List<LatLng> polylinePoints = [];
   late GoogleMapController mapController;
+  late int _totalNotifications;
+  late final FirebaseMessaging _messaging;
+  NotificationModel? _notificationInfor;
+
+  Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    print("Handling background message: ${message.messageId}");
+  }
+
+  void requestAndRegisterNotification() async {
+    // 1. Initialize firebase app
+    await Firebase.initializeApp();
+
+    // 2. Instantiate firebase messaging
+    _messaging = FirebaseMessaging.instance;
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+    // 3. On IOS, this helps to request user permissions
+    NotificationSettings settings = await _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      provisional: true,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print("User granted permission");
+      String? deviceToken = await _messaging.getToken();
+      print('Device token: $deviceToken');
+
+      // For handling the received notifications
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        // Parse the message received
+        NotificationModel notification = NotificationModel(
+          title: message.notification?.title,
+          body: message.notification?.body,
+        );
+
+        setState(() {
+          _notificationInfor = notification;
+          _totalNotifications++;
+        });
+
+        if (_notificationInfor != null) {
+          // For displaying the notification as an overlay
+          showSimpleNotification(
+            Text(_notificationInfor!.title!),
+            leading: NotificationBadge(totalNotifications: _totalNotifications),
+            subtitle: Text(_notificationInfor!.body!),
+            background: BaseColor.primary,
+            duration: const Duration(seconds: 2),
+          );
+        }
+      });
+    } else {
+      print("User denied permission");
+    }
+  }
+
+  @override
+  void initState() {
+    requestAndRegisterNotification();
+    _totalNotifications = 0;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,47 +135,45 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                  body: Stack(
-                    children: <Widget>[
-                      Gmap(
+                  body: Stack(children: <Widget>[
+                    Gmap(
+                      scaffoldState: scaffoldState,
+                      marker: mark,
+                      polylineCoordinates: polylinePoints,
+                      onMapCreated: (controller) => mapController = controller,
+                    ),
+                    Visibility(
+                      visible: homeState is DestinationSelectState,
+                      child: DestinationSelectionWidget(
                         scaffoldState: scaffoldState,
-                        marker: mark,
-                        polylineCoordinates: polylinePoints,
-                        onMapCreated: (controller) =>
-                            mapController = controller,
+                        callBack: (marker, polyPoints) {
+                          setState(() {
+                            mark = marker;
+                            polylinePoints = polyPoints;
+                          });
+                          mapController.animateCamera(
+                              CameraUpdate.newCameraPosition(CameraPosition(
+                            target: mark.position,
+                            zoom: 10.5,
+                          )));
+                          mapController.showMarkerInfoWindow(mark.markerId);
+                        },
                       ),
-                      Visibility(
-                        visible: homeState is DestinationSelectState,
-                        child: DestinationSelectionWidget(
-                          scaffoldState: scaffoldState,
-                          callBack: (marker, polyPoints) {
-                            setState(() {
-                              mark = marker;
-                              polylinePoints = polyPoints;
-                            });
-                            mapController.animateCamera(
-                                CameraUpdate.newCameraPosition(CameraPosition(
-                              target: mark.position,
-                              zoom: 10.5,
-                            )));
-                            mapController.showMarkerInfoWindow(mark.markerId);
-                          },
-                        ),
+                    ),
+                    Visibility(
+                      visible: homeState is PickupSeletionState,
+                      child: PickupSelectionWidget(
+                        scaffoldState: scaffoldState,
                       ),
-                      Visibility(
-                        visible: homeState is PickupSeletionState,
-                        child: PickupSelectionWidget(
-                          scaffoldState: scaffoldState,
-                        ),
+                    ),
+                    Visibility(
+                      visible: homeState is PaymentSeletionState,
+                      child: PaymentMethodSelectionWidget(
+                        scaffoldState: scaffoldState,
                       ),
-                      Visibility(
-                        visible: homeState is PaymentSeletionState,
-                        child: PaymentMethodSelectionWidget(
-                          scaffoldState: scaffoldState,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                    NotificationBadge(totalNotifications: _totalNotifications),
+                  ]),
                 ));
               },
             ),
