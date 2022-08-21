@@ -83,7 +83,6 @@ class _GmapState extends State<Gmap> {
             : {},
         onMapCreated: (GoogleMapController controller) {
           _mapController = controller;
-          getCurrentLocation();
           widget.onMapCreated(controller);
         },
       ),
