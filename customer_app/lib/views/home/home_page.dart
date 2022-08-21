@@ -44,6 +44,7 @@ class _HomePageState extends State<HomePage> {
         _totalNotifications++;
       });
 
+      print('Notification received: ${_notificationInfor!.body!}');
       if (_notificationInfor != null) {
         // For displaying the notification as an overlay
         showSimpleNotification(

@@ -34,6 +34,8 @@ class AppCubit extends Cubit<CubitState> {
       if (response != null) {
         var result = User.loginResponse(response);
         emit(AuthenticatedState(result));
+      } else {
+        emit(UnauthenticatedState());
       }
     }
   }
