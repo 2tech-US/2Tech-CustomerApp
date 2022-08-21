@@ -37,22 +37,27 @@ class _HomePageState extends State<HomePage> {
       NotificationModel notification = NotificationModel(
         title: message.notification?.title,
         body: message.notification?.body,
+        data: message.data,
       );
+      print('Notification data: ${notification.data!['phone']}');
 
       setState(() {
         _notificationInfor = notification;
         _totalNotifications++;
       });
-
-      print('Notification received: ${_notificationInfor!.body!}');
       if (_notificationInfor != null) {
         // For displaying the notification as an overlay
         showSimpleNotification(
-          Text(_notificationInfor!.title!),
+          Text(_notificationInfor!.title!,
+              style: BaseTextStyle.fontFamilyMedium(Colors.black, 20)),
           leading: NotificationBadge(totalNotifications: _totalNotifications),
-          subtitle: Text(_notificationInfor!.body!),
-          background: BaseColor.primary,
-          duration: const Duration(seconds: 2),
+          subtitle: Text(
+            _notificationInfor!.body!,
+            style: BaseTextStyle.fontFamilyRegular(Colors.black, 18),
+          ),
+          background: BaseColor.hint,
+          contentPadding: const EdgeInsets.all(6),
+          duration: const Duration(seconds: 5),
         );
       }
     });
@@ -115,6 +120,36 @@ class _HomePageState extends State<HomePage> {
                       onMapCreated: (controller) => mapController = controller,
                     ),
                     Visibility(
+                      visible: true,
+                      child: Positioned(
+                          top: 60,
+                          left: 15,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 30),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  child: _notificationInfor != null
+                                      ? Container(
+                                          color: Colors.green,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(16),
+                                            child: Text(
+                                              "Meet driver at the pick up location",
+                                              style: BaseTextStyle
+                                                  .fontFamilyMedium(
+                                                      Colors.white, 18),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+                                ),
+                              ],
+                            ),
+                          )),
+                    ),
+                    Visibility(
                       visible: homeState is DestinationSelectState,
                       child: DestinationSelectionWidget(
                         scaffoldState: scaffoldState,
@@ -144,7 +179,6 @@ class _HomePageState extends State<HomePage> {
                         scaffoldState: scaffoldState,
                       ),
                     ),
-                    NotificationBadge(totalNotifications: _totalNotifications),
                   ]),
                 ));
               },

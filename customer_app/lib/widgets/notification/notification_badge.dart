@@ -13,7 +13,7 @@ class NotificationBadge extends StatelessWidget {
       width: 40.0,
       height: 40.0,
       decoration: const BoxDecoration(
-        color: Colors.red,
+        color: BaseColor.primary,
         shape: BoxShape.circle,
       ),
       child: Center(
