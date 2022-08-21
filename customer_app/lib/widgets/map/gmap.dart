@@ -55,7 +55,11 @@ class _GmapState extends State<Gmap> {
   Widget build(BuildContext context) {
     return Stack(children: <Widget>[
       GoogleMap(
-        initialCameraPosition: _kGooglePlex,
+        initialCameraPosition: CameraPosition(
+          target:
+              LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+          zoom: 14.4746,
+        ),
         myLocationEnabled: true,
         mapType: MapType.normal,
         markers: {widget.marker!},
