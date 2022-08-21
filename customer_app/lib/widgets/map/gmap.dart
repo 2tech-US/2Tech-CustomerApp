@@ -31,12 +31,17 @@ class _GmapState extends State<Gmap> {
     location.getLocation().then((location) {
       currentLocation = location;
     });
-    CameraPosition myCurrentLocation = CameraPosition(
-      target: LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
-      zoom: 14.4746,
-    );
-    _mapController
-        .animateCamera(CameraUpdate.newCameraPosition(myCurrentLocation));
+
+    location.onLocationChanged.listen((newLoc) {
+      currentLocation = newLoc;
+      CameraPosition myCurrentLocation = CameraPosition(
+        target: LatLng(newLoc.latitude!, newLoc.longitude!),
+        zoom: 14.4746,
+      );
+      _mapController
+          .animateCamera(CameraUpdate.newCameraPosition(myCurrentLocation));
+      setState(() {});
+    });
   }
 
   static const CameraPosition _kGooglePlex = CameraPosition(
