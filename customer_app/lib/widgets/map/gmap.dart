@@ -70,8 +70,6 @@ class _GmapState extends State<Gmap> {
 
   @override
   Widget build(BuildContext context) {
-    print("Lat in GGMAP: ${widget.marker!.position}");
-    print("PolylineCoordinates: ${widget.polylineCoordinates}");
     return Stack(children: <Widget>[
       GoogleMap(
         initialCameraPosition: _kGooglePlex,

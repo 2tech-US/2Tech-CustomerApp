@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "489832121041",
+    "project_id": "tech-ridehailingservice",
+    "storage_bucket": "tech-ridehailingservice.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:489832121041:android:b89b987b32fb8aa4dcfbf0",
+        "android_client_info": {
+          "package_name": "com.example.customer_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "489832121041-tkllk738bh97e0jqbc25rhimsi4j2kv3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCU8hq6wdmF-TCUOTkEsAahR42i3cA9u18"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "489832121041-tkllk738bh97e0jqbc25rhimsi4j2kv3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "489832121041-5id415sc0ne22sgcul2r7s10abjcv0hq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.2tech.customerApp.vn"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

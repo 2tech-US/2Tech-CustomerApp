@@ -28,61 +28,33 @@ class _HomePageState extends State<HomePage> {
   List<LatLng> polylinePoints = [];
   late GoogleMapController mapController;
   late int _totalNotifications;
-  late final FirebaseMessaging _messaging;
   NotificationModel? _notificationInfor;
 
-  Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-    print("Handling background message: ${message.messageId}");
-  }
-
   void requestAndRegisterNotification() async {
-    // 1. Initialize firebase app
-    await Firebase.initializeApp();
+    // For handling the received notifications
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      // Parse the message received
+      NotificationModel notification = NotificationModel(
+        title: message.notification?.title,
+        body: message.notification?.body,
+      );
 
-    // 2. Instantiate firebase messaging
-    _messaging = FirebaseMessaging.instance;
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-    // 3. On IOS, this helps to request user permissions
-    NotificationSettings settings = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      provisional: true,
-      sound: true,
-    );
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print("User granted permission");
-      String? deviceToken = await _messaging.getToken();
-      print('Device token: $deviceToken');
-
-      // For handling the received notifications
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        // Parse the message received
-        NotificationModel notification = NotificationModel(
-          title: message.notification?.title,
-          body: message.notification?.body,
-        );
-
-        setState(() {
-          _notificationInfor = notification;
-          _totalNotifications++;
-        });
-
-        if (_notificationInfor != null) {
-          // For displaying the notification as an overlay
-          showSimpleNotification(
-            Text(_notificationInfor!.title!),
-            leading: NotificationBadge(totalNotifications: _totalNotifications),
-            subtitle: Text(_notificationInfor!.body!),
-            background: BaseColor.primary,
-            duration: const Duration(seconds: 2),
-          );
-        }
+      setState(() {
+        _notificationInfor = notification;
+        _totalNotifications++;
       });
-    } else {
-      print("User denied permission");
-    }
+
+      if (_notificationInfor != null) {
+        // For displaying the notification as an overlay
+        showSimpleNotification(
+          Text(_notificationInfor!.title!),
+          leading: NotificationBadge(totalNotifications: _totalNotifications),
+          subtitle: Text(_notificationInfor!.body!),
+          background: BaseColor.primary,
+          duration: const Duration(seconds: 2),
+        );
+      }
+    });
   }
 
   @override
@@ -94,7 +66,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("Marker in Home: ${mark.position}");
     return BlocBuilder<AppCubit, CubitState>(
       builder: (context, appState) {
         if (appState is AuthenticatedState) {
