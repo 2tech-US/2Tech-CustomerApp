@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:customer_app/cubit/app_cubit.dart';
 import 'package:customer_app/cubit/home/home_cubit.dart';
 import 'package:customer_app/models/notification/notification_model.dart';
+import 'package:customer_app/service/base_service.dart';
+import 'package:customer_app/service/service_path.dart';
 import 'package:customer_app/utils/base_constant.dart';
 import 'package:customer_app/widgets/destination_selection/destination_selection.dart';
 import 'package:customer_app/widgets/notification/notification_badge.dart';
@@ -182,11 +186,35 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Visibility(
-                      visible: homeState is PaymentSeletionState,
-                      child: PaymentMethodSelectionWidget(
-                        scaffoldState: scaffoldState,
-                      ),
-                    ),
+                        visible: homeState is PaymentSeletionState,
+                        child: PaymentMethodSelectionWidget(
+                          scaffoldState: scaffoldState,
+                          callback: () async {
+                            String data = ''' {
+                                    "type": "app",
+                                    "phone": ${appState.user.phone},
+                                    "pick_up_location": {
+            "latitude": ${pickupLocation!.latitude},
+            "longitude": ${pickupLocation!.longitude}
+        },
+         "drop_off_location": {
+            "latitude": ${destinationLocation!.latitude},
+            "longitude": ${destinationLocation!.longitude}
+        }
+                                  }
+                                  ''';
+                            print('Destination: ${destinationLocation}');
+                            print('Pickup: ${pickupLocation}');
+
+                            Map<String, dynamic> params = json.decode(data);
+                            var response = await BaseService.postData(
+                                ServicePath.createBooking, params);
+                            print("Response create request: $response");
+                            if (response != null && response['status'] == 200) {
+                              print("Update location success");
+                            }
+                          },
+                        )),
                   ]),
                 ));
               },

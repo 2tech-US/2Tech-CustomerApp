@@ -12,10 +12,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class PickupSelectionWidget extends StatefulWidget {
-  const PickupSelectionWidget({Key? key, required this.scaffoldState})
+  const PickupSelectionWidget(
+      {Key? key, required this.scaffoldState, required this.callBack})
       : super(key: key);
 
   final GlobalKey<ScaffoldState> scaffoldState;
+  final Function(LatLng) callBack;
+
   @override
   State<PickupSelectionWidget> createState() => _PickupSelectionWidgetState();
 }

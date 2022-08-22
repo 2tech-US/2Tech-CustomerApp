@@ -6,6 +6,9 @@ class ServicePath {
   //Passenger
   static const String getPassengerInfor = "$apiUrl/passengers/";
 
+  //Booking
+  static const String createBooking = "$apiUrl/bookings/request";
+
   //Google maps
   static const String googleMapsAPIKey =
       "AIzaSyDH75bfzU1Vy1VqSOAPBrVZ_OUCOlnLE8E";

@@ -17,7 +17,7 @@ class DestinationSelectionWidget extends StatefulWidget {
       {Key? key, required this.scaffoldState, required this.callBack})
       : super(key: key);
   final GlobalKey<ScaffoldState> scaffoldState;
-  final Function(Marker, List<LatLng>) callBack;
+  final Function(Marker, List<LatLng>, LatLng) callBack;
 
   @override
   State<DestinationSelectionWidget> createState() =>
@@ -204,7 +204,7 @@ class _DestinationSelectionWidgetState
       final lat = detail.result.geometry!.location.lat;
       final lng = detail.result.geometry!.location.lng;
       widget.callBack(addDestinationMarker(LatLng(lat, lng), p.description!),
-          await getPolyPoints(LatLng(lat, lng)));
+          await getPolyPoints(LatLng(lat, lng)), LatLng(lat, lng));
 
       BlocProvider.of<HomeCubit>(context).pickupSelection();
 

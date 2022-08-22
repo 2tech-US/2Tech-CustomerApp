@@ -1,5 +1,11 @@
+import 'dart:convert';
+
+import 'package:customer_app/cubit/app_cubit.dart';
 import 'package:customer_app/cubit/home/home_cubit.dart';
+import 'package:customer_app/service/base_service.dart';
+import 'package:customer_app/service/service_path.dart';
 import 'package:customer_app/utils/base_constant.dart';
+import 'package:customer_app/widgets/template_page/app_loading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
@@ -9,10 +15,14 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class PaymentMethodSelectionWidget extends StatefulWidget {
-  const PaymentMethodSelectionWidget({Key? key, required this.scaffoldState})
-      : super(key: key);
+  const PaymentMethodSelectionWidget({
+    Key? key,
+    required this.scaffoldState,
+    required this.callback,
+  }) : super(key: key);
 
   final GlobalKey<ScaffoldState> scaffoldState;
+  final VoidCallback callback;
 
   @override
   State<PaymentMethodSelectionWidget> createState() =>
@@ -118,6 +128,7 @@ class _PaymentMethodSelectionWidgetState
                               //     lng: appState.pickupCoordinates.longitude,
                               //     context: context);
                               // appState.changeMainContext(context);
+                              widget.callback();
 
                               showDialog(
                                   context: context,
@@ -157,7 +168,7 @@ class _PaymentMethodSelectionWidgetState
                                               LinearPercentIndicator(
                                                 lineHeight: 4,
                                                 animation: true,
-                                                animationDuration: 100000,
+                                                animationDuration: 10000,
                                                 percent: 1,
                                                 backgroundColor: Colors.grey
                                                     .withOpacity(0.2),
