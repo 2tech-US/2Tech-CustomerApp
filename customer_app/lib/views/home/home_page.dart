@@ -29,6 +29,8 @@ class _HomePageState extends State<HomePage> {
   late GoogleMapController mapController;
   late int _totalNotifications;
   NotificationModel? _notificationInfor;
+  LatLng? destinationLocation;
+  LatLng? pickupLocation;
 
   void requestAndRegisterNotification() async {
     // For handling the received notifications
@@ -153,10 +155,11 @@ class _HomePageState extends State<HomePage> {
                       visible: homeState is DestinationSelectState,
                       child: DestinationSelectionWidget(
                         scaffoldState: scaffoldState,
-                        callBack: (marker, polyPoints) {
+                        callBack: (marker, polyPoints, destination) {
                           setState(() {
                             mark = marker;
                             polylinePoints = polyPoints;
+                            destinationLocation = destination;
                           });
                           mapController.animateCamera(
                               CameraUpdate.newCameraPosition(CameraPosition(
@@ -171,6 +174,11 @@ class _HomePageState extends State<HomePage> {
                       visible: homeState is PickupSeletionState,
                       child: PickupSelectionWidget(
                         scaffoldState: scaffoldState,
+                        callBack: (pickupLoc) {
+                          setState(() {
+                            pickupLocation = pickupLoc;
+                          });
+                        },
                       ),
                     ),
                     Visibility(
