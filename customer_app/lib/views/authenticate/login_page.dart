@@ -184,7 +184,6 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _phoneError = "Số điện thoại hoặc mật khẩu không đúng";
       });
-      print('login fail');
     }
   }
 

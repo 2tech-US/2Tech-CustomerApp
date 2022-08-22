@@ -31,7 +31,7 @@ class AppCubit extends Cubit<CubitState> {
       var response = await BaseService.getData(
           ServicePath.getPassengerInfor + currentPhone!,
           token: currentToken);
-      if (response != null) {
+      if (response != null && response['status'] == 200) {
         var result = User.loginResponse(response);
         emit(AuthenticatedState(result));
       } else {
